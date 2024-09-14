@@ -1,0 +1,23 @@
+.main_container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100%;
+  width: 100%;
+  position: fixed;
+  padding: 8px;
+  padding-top: 0;
+  box-sizing: border-box;
+}
+
+.img {
+  width: 50px;
+  object-fit: contain;
+}
+
+.main_content {
+  display: flex;
+  flex-grow: 1;
+  padding: 16px;
+  justify-content: center;
+}
