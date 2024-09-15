@@ -1,10 +1,14 @@
+@use "../../theme/palette";
+@use "../../theme/borderRadius";
+@use "../../theme/spacing";
+
 .main_container {
   display: flex;
   width: 100%;
   max-width: 300px;
-  border-radius: 0 0 16px 16px;
+  border-radius: 0 0 spacing.$xs spacing.$xs;
   height: 100%;
-  background-color: white;
+  background-color: palette.$white;
   flex-direction: column;
 }
 
@@ -12,49 +16,49 @@
   display: flex;
   flex-direction: column;
   list-style-type: none;
-  gap: 16px;
-  padding: 16px;
+  gap: spacing.$xs;
+  padding: spacing.$xs;
   width: 100%;
 }
 
 .nav_items {
-  padding: 8px;
+  padding: spacing.$xxs;
   position: static;
   cursor: pointer;
-  border-radius: 4px;
+  border-radius: calc(borderRadius.$border-radius-small / 2);
   text-decoration: none;
-  color: black;
-  margin-right: 32px;
+  color: palette.$black;
+  margin-right: spacing.$m;
   &:hover {
-    background-color: rgba(128, 0, 128, 0.062);
+    background-color: palette.$primary-x10;
   }
   &.active {
-    background-color: rgba(128, 0, 128, 0.137);
+    background-color: palette.$primary-x50;
 
-    color: purple;
+    color: palette.$primary-x500;
     font-weight: 600;
   }
 }
 
 .tab_content {
   display: flex;
-  gap: 8px;
+  gap: spacing.$xxs;
   align-items: center;
 }
 
 .logo {
   object-fit: contain;
-  height: 40px;
-  border-radius: 8px;
+  height: spacing.$m;
+  border-radius: spacing.$xxs;
 }
 
 .logo_container {
   display: flex;
   align-items: center;
-  gap: 16px;
+  gap: spacing.$xs;
   font-weight: 600;
-  margin-top: 32px;
+  margin-top: spacing.$m;
   justify-content: center;
-  border-bottom: solid 1px rgb(201, 201, 201);
-  padding-bottom: 16px;
+  border-bottom: solid 1px palette.$grey-x50;
+  padding-bottom: spacing.$xs;
 }
