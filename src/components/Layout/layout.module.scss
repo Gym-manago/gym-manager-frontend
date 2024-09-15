@@ -1,0 +1,33 @@
+@use "../../theme/spacing";
+@use "../../theme/palette";
+@use "../../theme/borderRadius";
+
+.layout_container {
+  width: 100%;
+}
+
+.layout_header {
+  display: flex;
+  padding: spacing.$s;
+  gap: spacing.$xxs;
+  align-items: center;
+  background-color: palette.$white;
+  border-radius: borderRadius.$border-radius-small;
+  h1 {
+    margin: 0;
+  }
+}
+
+.main_container {
+  display: flex;
+  width: 100%;
+  height: fit-content;
+  margin-top: spacing.$m;
+}
+
+.back_icon {
+  cursor: pointer;
+  display: flex;
+  justify-content: center;
+  height: 100%;
+}

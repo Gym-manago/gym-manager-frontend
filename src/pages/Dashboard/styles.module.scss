@@ -1,0 +1,6 @@
+@use "../../theme//spacing";
+
+.img {
+  width: spacing.$l;
+  object-fit: contain;
+}
