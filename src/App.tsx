@@ -1,4 +1,3 @@
-import logo from "/logo.jpeg";
 import style from "./styles/App.module.scss";
 import { SideNav } from "./components";
 import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
