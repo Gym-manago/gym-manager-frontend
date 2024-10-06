@@ -1,0 +1,6 @@
+@use "../../../theme/borderRadius";
+
+.table_header {
+  border-radius: borderRadius.$border-radius-small
+    borderRadius.$border-radius-small 0 0;
+}
