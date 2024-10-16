@@ -11,11 +11,19 @@
   padding: spacing.$s;
   gap: spacing.$xxs;
   align-items: center;
+  justify-content: space-between;
   background-color: palette.$white;
   border-radius: borderRadius.$border-radius-small;
   h1 {
     margin: 0;
   }
+}
+
+.layout_header_title {
+  display: flex;
+  gap: spacing.$xxs;
+  align-items: center;
+  height: 100%;
 }
 
 .main_container {
