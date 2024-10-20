@@ -65,8 +65,10 @@ const MembersList = () => {
           </TableRow>
         </TableHead>
         <TableBody>
-          {ROWS.map((row) => (
-            <TableRow>
+          {ROWS.map((row, index) => (
+            <TableRow
+              className={index % 2 ? styles.row_white : styles.row_dark}
+            >
               {HEADERS_DATA.map(({ id }) => (
                 <TableCell key={id}>{row[id]}</TableCell>
               ))}

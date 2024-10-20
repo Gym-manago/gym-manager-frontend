@@ -1,6 +1,14 @@
 @use "../../../theme/borderRadius";
+@use "../../../theme/palette";
 
 .table_header {
-  border-radius: borderRadius.$border-radius-small
-    borderRadius.$border-radius-small 0 0;
+  border-radius: borderRadius.$border-radius-small;
+  border: solid 1px palette.$grey-x50;
+}
+
+.row_white {
+  background-color: white;
+}
+.row_dark {
+  background-color: transparent;
 }
