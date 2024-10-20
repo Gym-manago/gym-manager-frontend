@@ -2,9 +2,9 @@ export interface Member {
   firstName: string;
   lastName: string;
   gender: "Male" | "Female" | "Others";
-  age: number;
+  dob: Date;
   streetLine1: string;
-  streetLint2: string;
+  streetLine2: string;
   city: string;
   state: string;
   country: string;

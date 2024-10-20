@@ -38,5 +38,45 @@
 
 .modal_content {
   display: flex;
-  padding: spacing.$xs;
+  padding: spacing.$m;
+  flex-direction: column;
+  gap: spacing.$xs;
+  max-height: 600px;
+  overflow-y: auto;
+}
+
+.modal_form {
+  display: flex;
+  flex-direction: column;
+  gap: spacing.$xs;
+  width: 100%;
+  input[type="number"]::-webkit-inner-spin-button,
+  input[type="number"]::-webkit-outer-spin-button {
+    -webkit-appearance: none;
+    margin: 0;
+  }
+}
+
+.modal_form_group_horizontal {
+  display: flex;
+  gap: spacing.$xs;
+  width: 100%;
+  div {
+    width: 100%;
+  }
+}
+
+.modal_form_group_vertical {
+  display: flex;
+  flex-direction: column;
+  gap: spacing.$xs;
+  width: 100%;
+  div {
+    width: 100%;
+  }
+}
+
+.radio_group:global(.MuiFormGroup-root) {
+  flex-direction: row;
+  gap: spacing.$xs;
 }
