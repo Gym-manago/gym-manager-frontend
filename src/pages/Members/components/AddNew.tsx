@@ -13,6 +13,7 @@ import {
   Typography,
 } from "@mui/material";
 import { useState } from "react";
+import { useSetUser } from "../../../contexts/Users";
 
 interface Props {
   onClose: () => void;
@@ -24,10 +25,12 @@ export const AddNew = ({ onClose }: Props) => {
       membershipType: [],
     },
   });
+  const setUserData = useSetUser();
   const [age, setAge] = useState(0);
 
   const onSubmit = (memberData: Member) => {
-    console.log(memberData);
+    setUserData({ ...memberData, age });
+    onClose();
   };
 
   function getAge(dateString: string) {

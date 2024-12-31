@@ -15,7 +15,6 @@ export const Layout = ({
   children,
   HeaderEndNode,
 }: Props) => {
-  console.log(HeaderEndNode);
   return (
     <div className={styles.layout_container}>
       <header className={styles.layout_header}>
