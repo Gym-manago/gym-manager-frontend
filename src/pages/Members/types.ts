@@ -4,7 +4,7 @@ export interface Member {
   gender: "Male" | "Female" | "Others";
   dob: Date;
   streetLine1: string;
-  streetLine2: string;
+  streetLine2?: string;
   city: string;
   state: string;
   country: string;
@@ -12,4 +12,5 @@ export interface Member {
   membershipType: ["GYM" | "SWIMMING POOL", "GYM" | "SWIMMING POOL"];
   phoneNumber: string;
   paymentMethod: "UPI" | "CASH";
+  age: number;
 }

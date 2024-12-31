@@ -7,6 +7,7 @@ import {
   TableRow,
 } from "@mui/material";
 import styles from "./styels.module.scss";
+import { useUser } from "../../../contexts/Users";
 
 type Headers = {
   id: "name" | "mobile_num" | "gender" | "age" | "membership_type";
@@ -16,9 +17,9 @@ type Headers = {
 type Rows = {
   name: string;
   mobile_num: string;
-  gender: string;
+  gender: "Male" | "Female" | "Others";
   age: string;
-  membership_type: "Gym" | "Swimming Pool";
+  membership_type: string;
 }[];
 
 const HEADERS_DATA: Headers = [
@@ -29,31 +30,17 @@ const HEADERS_DATA: Headers = [
   { id: "membership_type", label: "Membership Type" },
 ];
 
-const ROWS: Rows = [
-  {
-    name: "Sameer",
-    mobile_num: "123123123123",
-    gender: "Male",
-    age: "21",
-    membership_type: "Gym",
-  },
-  {
-    name: "Sameer",
-    mobile_num: "123123123123",
-    gender: "Male",
-    age: "21",
-    membership_type: "Gym",
-  },
-  {
-    name: "Sameer",
-    mobile_num: "123123123123",
-    gender: "Male",
-    age: "21",
-    membership_type: "Gym",
-  },
-];
-
 const MembersList = () => {
+  const users = useUser();
+  const ROWS: Rows = users.map(
+    ({ firstName, lastName, phoneNumber, gender, age, membershipType }) => ({
+      name: firstName + lastName,
+      mobile_num: phoneNumber,
+      gender,
+      age: age?.toString(),
+      membership_type: membershipType.join(" "),
+    })
+  );
   return (
     <TableContainer className={styles.table_header}>
       <Table stickyHeader>
@@ -68,6 +55,7 @@ const MembersList = () => {
           {ROWS.map((row, index) => (
             <TableRow
               className={index % 2 ? styles.row_white : styles.row_dark}
+              key={row.mobile_num}
             >
               {HEADERS_DATA.map(({ id }) => (
                 <TableCell key={id}>{row[id]}</TableCell>
