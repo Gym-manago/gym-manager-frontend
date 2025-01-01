@@ -7,8 +7,10 @@ export const Dashboard = () => {
   const navigate = useNavigate();
   return (
     <Layout headerTitle="Dashboard" onBack={() => navigate(-1)}>
-      <img src={logo} className={styles.img} />
-      <h1>Hello Ma!!</h1>
+      <div className={styles.container}>
+        <img src={logo} className={styles.img} />
+        <h1>Welcome to Chirawa City GYM Manager</h1>
+      </div>
     </Layout>
   );
 };
