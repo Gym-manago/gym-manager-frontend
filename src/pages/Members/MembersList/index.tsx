@@ -8,6 +8,7 @@ import {
 } from "@mui/material";
 import styles from "./styels.module.scss";
 import { useUser } from "../../../contexts/Users";
+import { useEffect, useState } from "react";
 
 type Headers = {
   id: "name" | "mobile_num" | "gender" | "age" | "membership_type";
@@ -30,17 +31,45 @@ const HEADERS_DATA: Headers = [
   { id: "membership_type", label: "Membership Type" },
 ];
 
-const MembersList = () => {
+const MembersList = ({ searchValue }: { searchValue: string }) => {
   const users = useUser();
   const ROWS: Rows = users.map(
     ({ firstName, lastName, phoneNumber, gender, age, membershipType }) => ({
-      name: firstName + lastName,
+      name: firstName + " " + lastName,
       mobile_num: phoneNumber,
       gender,
       age: age?.toString(),
       membership_type: membershipType.join(" "),
     })
   );
+  const [rows, setRows] = useState<Rows>(ROWS);
+
+  const [timeCtx, setTimeCtx] = useState<NodeJS.Timeout | null>(null);
+
+  useEffect(() => {
+    if (searchValue) {
+      if (timeCtx) clearTimeout(timeCtx);
+      setTimeCtx(
+        setTimeout(
+          () =>
+            setRows(
+              ROWS.filter((row) =>
+                row.name
+                  .toLowerCase()
+                  .includes(searchValue.trim().toLowerCase())
+              ) || []
+            ),
+          500
+        )
+      );
+    }
+  }, [searchValue]);
+
+  useEffect(() => {
+    setRows(ROWS);
+    console.log("hit");
+  }, [users]);
+
   return (
     <TableContainer className={styles.table_header}>
       <Table stickyHeader>
@@ -52,7 +81,7 @@ const MembersList = () => {
           </TableRow>
         </TableHead>
         <TableBody>
-          {ROWS.map((row, index) => (
+          {rows.map((row, index) => (
             <TableRow
               className={index % 2 ? styles.row_white : styles.row_dark}
               key={row.mobile_num}
