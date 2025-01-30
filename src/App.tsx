@@ -1,7 +1,7 @@
 import style from "./styles/App.module.scss";
 import { SideNav } from "./components";
 import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
-import { Dashboard, Members } from "./pages";
+import { Dashboard, Members, MembersDetails, MembersList } from "./pages";
 
 function App() {
   return (
@@ -12,7 +12,10 @@ function App() {
           <Routes>
             <Route index element={<Navigate to="/dashboard" />} />
             <Route path="/dashboard" element={<Dashboard />} />
-            <Route path="/members" element={<Members />} />
+            <Route path="/members" element={<Members />}>
+              <Route index element={<MembersList />} />
+              <Route path=":id" element={<MembersDetails />} />
+            </Route>
           </Routes>
         </section>
       </div>

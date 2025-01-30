@@ -1,6 +1,7 @@
-import { defineConfig } from "vite";
-import react from "@vitejs/plugin-react-swc";
-import { config } from "dotenv";
+import { defineConfig } from 'vite';
+import react from '@vitejs/plugin-react-swc';
+import { config } from 'dotenv';
+import { resolve } from 'path';
 
 config();
 
@@ -12,5 +13,8 @@ export default defineConfig({
     watch: {
       usePolling: true,
     },
+  },
+  resolve: {
+    alias: { '~': resolve(__dirname, 'src') },
   },
 });
