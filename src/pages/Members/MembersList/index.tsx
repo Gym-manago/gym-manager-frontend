@@ -5,46 +5,52 @@ import {
   TableContainer,
   TableHead,
   TableRow,
-} from "@mui/material";
-import styles from "./styels.module.scss";
-import { useUser } from "../../../contexts/Users";
-import { useEffect, useState } from "react";
+} from '@mui/material';
+import { IconButton, InputAdornment, OutlinedInput } from '@mui/material';
+import styles from './styels.module.scss';
+import { useUser } from '../../../contexts/Users';
+import { useEffect, useState } from 'react';
+import { SearchOutlined } from '@mui/icons-material';
+import { useNavigate } from 'react-router-dom';
 
 type Headers = {
-  id: "name" | "mobile_num" | "gender" | "age" | "membership_type";
+  id: 'name' | 'mobile_num' | 'gender' | 'age' | 'membership_type';
   label: string;
 }[];
 
 type Rows = {
   name: string;
   mobile_num: string;
-  gender: "Male" | "Female" | "Others";
+  gender: 'Male' | 'Female' | 'Others';
   age: string;
   membership_type: string;
 }[];
 
 const HEADERS_DATA: Headers = [
-  { id: "name", label: "Name" },
-  { id: "mobile_num", label: "Mobile number" },
-  { id: "gender", label: "Gender" },
-  { id: "age", label: "Age" },
-  { id: "membership_type", label: "Membership Type" },
+  { id: 'name', label: 'Name' },
+  { id: 'mobile_num', label: 'Mobile number' },
+  { id: 'gender', label: 'Gender' },
+  { id: 'age', label: 'Age' },
+  { id: 'membership_type', label: 'Membership Type' },
 ];
 
-const MembersList = ({ searchValue }: { searchValue: string }) => {
+const MembersList = () => {
   const users = useUser();
+  const [searchValue, setSearchValue] = useState('');
   const ROWS: Rows = users.map(
     ({ firstName, lastName, phoneNumber, gender, age, membershipType }) => ({
-      name: firstName + " " + lastName,
+      name: firstName + ' ' + lastName,
       mobile_num: phoneNumber,
       gender,
       age: age?.toString(),
-      membership_type: membershipType.join(" "),
+      membership_type: membershipType.join(' '),
     })
   );
   const [rows, setRows] = useState<Rows>(ROWS);
 
   const [timeCtx, setTimeCtx] = useState<NodeJS.Timeout | null>(null);
+
+  const navigate = useNavigate();
 
   useEffect(() => {
     if (searchValue) {
@@ -67,33 +73,50 @@ const MembersList = ({ searchValue }: { searchValue: string }) => {
 
   useEffect(() => {
     setRows(ROWS);
-    console.log("hit");
+    console.log('hit');
   }, [users]);
 
   return (
-    <TableContainer className={styles.table_header}>
-      <Table stickyHeader>
-        <TableHead>
-          <TableRow>
-            {HEADERS_DATA.map(({ id, label }) => (
-              <TableCell key={id}>{label}</TableCell>
-            ))}
-          </TableRow>
-        </TableHead>
-        <TableBody>
-          {rows.map((row, index) => (
-            <TableRow
-              className={index % 2 ? styles.row_white : styles.row_dark}
-              key={row.mobile_num}
-            >
-              {HEADERS_DATA.map(({ id }) => (
-                <TableCell key={id}>{row[id]}</TableCell>
+    <div className={styles.members_content_container}>
+      <OutlinedInput
+        placeholder='Search'
+        endAdornment={
+          <InputAdornment position='end'>
+            <IconButton aria-label='searchIcon' edge='end'>
+              <SearchOutlined />
+            </IconButton>
+          </InputAdornment>
+        }
+        value={searchValue}
+        onChange={(e) => setSearchValue(e.target.value)}
+      />
+
+      <TableContainer className={styles.table_header}>
+        <Table stickyHeader>
+          <TableHead>
+            <TableRow>
+              {HEADERS_DATA.map(({ id, label }) => (
+                <TableCell key={id}>{label}</TableCell>
               ))}
             </TableRow>
-          ))}
-        </TableBody>
-      </Table>
-    </TableContainer>
+          </TableHead>
+          <TableBody>
+            {rows.map((row, index) => (
+              <TableRow
+                style={{ cursor: 'pointer' }}
+                onClick={() => navigate(`${row.mobile_num}`)}
+                className={index % 2 ? styles.row_white : styles.row_dark}
+                key={row.mobile_num}
+              >
+                {HEADERS_DATA.map(({ id }) => (
+                  <TableCell key={id}>{row[id]}</TableCell>
+                ))}
+              </TableRow>
+            ))}
+          </TableBody>
+        </Table>
+      </TableContainer>
+    </div>
   );
 };
 

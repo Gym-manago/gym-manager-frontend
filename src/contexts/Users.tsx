@@ -4,11 +4,11 @@ import {
   PropsWithChildren,
   useContext,
   useState,
-} from "react";
-import { Member } from "../pages/Members/types";
-import { useMount } from "react-use";
+} from 'react';
+import { Member } from '../pages/Members/types';
+import { useMount } from 'react-use';
 
-const DATABASE_NAME = "GymManagerDB";
+const DATABASE_NAME = 'GymManagerDB';
 
 interface UserContext {
   users: Member[];
@@ -20,14 +20,17 @@ const UserContext = createContext<UserContext>({
   setUsers: () => {},
 });
 
-export const useUser = () => {
+export const useUser = (id?: string) => {
   const { users } = useContext(UserContext);
+  console.log(users, id);
 
   if (!users) {
-    throw Error("Cannot access user outside!!");
+    throw Error('Cannot access user outside!!');
   }
 
-  return users ?? null;
+  return (
+    (id ? [users.find((user) => user.phoneNumber === id)!] : users) ?? null
+  );
 };
 
 export const useSetUser = () => useContext(UserContext).setUsers;
@@ -40,12 +43,12 @@ export const UserProvider: FC<PropsWithChildren> = ({ children }) => {
 
     request.onsuccess = () => {
       const db = request.result;
-      const tx = db.transaction("users", "readwrite");
-      const store = tx.objectStore("users");
+      const tx = db.transaction('users', 'readwrite');
+      const store = tx.objectStore('users');
       console.log(store);
       store.add(value);
-      const res = store.getAll("users");
-      res.onsuccess = () => console.log("just after", res.result);
+      const res = store.getAll('users');
+      res.onsuccess = () => console.log('just after', res.result);
     };
     request.onerror = () => {
       console.error(request.error?.message);
@@ -59,15 +62,15 @@ export const UserProvider: FC<PropsWithChildren> = ({ children }) => {
     request.onupgradeneeded = () => {
       const db = request.result;
 
-      if (!db.objectStoreNames.contains("users")) {
-        db.createObjectStore("users", { keyPath: "phoneNumber" });
+      if (!db.objectStoreNames.contains('users')) {
+        db.createObjectStore('users', { keyPath: 'phoneNumber' });
       }
     };
 
     request.onsuccess = () => {
       const db = request.result;
-      const tx = db.transaction("users", "readwrite");
-      const store = tx.objectStore("users");
+      const tx = db.transaction('users', 'readwrite');
+      const store = tx.objectStore('users');
       const res = store.getAll();
       res.onsuccess = () => {
         setUsers(res.result);

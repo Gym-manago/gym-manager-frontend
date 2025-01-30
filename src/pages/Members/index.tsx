@@ -1,54 +1,41 @@
-import {
-  Button,
-  IconButton,
-  InputAdornment,
-  OutlinedInput,
-} from "@mui/material";
+import { Button } from "@mui/material";
 import { Layout } from "../../components";
-import MembersList from "./MembersList";
 import { useState } from "react";
-import { AddNew } from "./components";
 import { createPortal } from "react-dom";
-import styles from "./styles.module.scss";
-import { SearchOutlined } from "@mui/icons-material";
+import { AddNew } from "./components";
+import { Outlet, useParams } from "react-router-dom";
+import MembersDetails from "./MembersDetails";
+import MembersList from "./MembersList";
 
 export const Members = () => {
   const [showAddNew, setShowAddNew] = useState(false);
-  const [searchValue, setSearchValue] = useState("");
+  const { id } = useParams();
+
+  console.log(id);
 
   return (
     <Layout
-      headerTitle="Members"
-      HeaderEndNode={
-        <Button
-          title="Add new"
-          onClick={() => setShowAddNew(true)}
-          variant="contained"
-        >
-          Add new
-        </Button>
-      }
+      headerTitles={["Members", id]}
+      {...(!id && {
+        HeaderEndNode: (
+          <Button
+            title="Add new"
+            onClick={() => setShowAddNew(true)}
+            variant="contained"
+          >
+            Add new
+          </Button>
+        ),
+      })}
     >
-      <div className={styles.members_content_container}>
-        <OutlinedInput
-          placeholder="Search"
-          endAdornment={
-            <InputAdornment position="end">
-              <IconButton aria-label="searchIcon" edge="end">
-                <SearchOutlined />
-              </IconButton>
-            </InputAdornment>
-          }
-          value={searchValue}
-          onChange={(e) => setSearchValue(e.target.value)}
-        />
-        <MembersList searchValue={searchValue} />
-        {showAddNew &&
-          createPortal(
-            <AddNew onClose={() => setShowAddNew(false)} />,
-            document.body
-          )}
-      </div>
+      <Outlet />
+      {showAddNew &&
+        createPortal(
+          <AddNew onClose={() => setShowAddNew(false)} />,
+          document.body
+        )}
     </Layout>
   );
 };
+
+export { MembersDetails, MembersList };

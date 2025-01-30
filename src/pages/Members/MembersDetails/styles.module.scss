@@ -1,0 +1,56 @@
+@use '../../../theme/borderRadius';
+@use '../../../theme/palette';
+@use '../../../theme//spacing';
+
+.container {
+  display: flex;
+  border-radius: borderRadius.$border-radius-small;
+  background-color: palette.$white;
+  padding: spacing.$m;
+  width: 100%;
+  gap: spacing.$xs;
+  flex-direction: column;
+  max-height: 79vh;
+  overflow-y: auto;
+}
+
+.content {
+  display: flex;
+  padding-bottom: spacing.$xl;
+}
+
+.modal_form_group_horizontal {
+  display: flex;
+  gap: spacing.$xs;
+  width: 100%;
+  div {
+    width: 100%;
+  }
+}
+
+.modal_form_group_vertical {
+  display: flex;
+  flex-direction: column;
+  gap: spacing.$xs;
+  width: 100%;
+  div {
+    width: 100%;
+  }
+}
+
+.modal_form {
+  display: flex;
+  flex-direction: column;
+  gap: spacing.$xs;
+  width: 100%;
+  input[type='number']::-webkit-inner-spin-button,
+  input[type='number']::-webkit-outer-spin-button {
+    -webkit-appearance: none;
+    margin: 0;
+  }
+}
+
+.radio_group:global(.MuiFormGroup-root) {
+  flex-direction: row;
+  gap: spacing.$xs;
+}
