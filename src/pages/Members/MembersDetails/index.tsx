@@ -34,7 +34,7 @@ const MembersDetails = () => {
   const [age, setAge] = useState(user?.age ?? 0);
 
   const onSubmit = (memberData: Member) => {
-    setUserData({ ...memberData, age: memberData.age || age });
+    setUserData({ ...memberData, age: age || memberData.age });
     navigate('/members');
   };
 
@@ -54,6 +54,7 @@ const MembersDetails = () => {
     if (user) {
       reset(user);
       setValue('gender', user.gender);
+      setAge(user.age);
     }
   }, [user]);
 
