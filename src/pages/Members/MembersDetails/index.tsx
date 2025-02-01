@@ -1,4 +1,4 @@
-import { useParams } from 'react-router-dom';
+import { useNavigate, useParams } from 'react-router-dom';
 import { useSetUser, useUser } from '~/contexts/Users';
 import styles from './styles.module.scss';
 // import styles from '../styles.module.scss';
@@ -20,16 +20,22 @@ import { HourglassBottom } from '@mui/icons-material';
 const MembersDetails = () => {
   const { id } = useParams();
   const [user] = useUser(id);
+  const navigate = useNavigate();
 
-  const { control, handleSubmit, reset, setValue } = useForm<Member>({
-    defaultValues: user || { membershipType: [] },
-  });
+  if (!user || !id) navigate('/members');
+
+  const { control, handleSubmit, reset, setValue, formState } = useForm<Member>(
+    {
+      defaultValues: user || { membershipType: [] },
+    }
+  );
 
   const setUserData = useSetUser();
   const [age, setAge] = useState(user?.age ?? 0);
 
   const onSubmit = (memberData: Member) => {
-    setUserData({ ...memberData, age });
+    setUserData({ ...memberData, age: memberData.age || age });
+    navigate('/members');
   };
 
   function getAge(dateString: string) {
@@ -256,7 +262,11 @@ const MembersDetails = () => {
             />
           </span>
         </span>
-        <Button type='submit' variant='contained' disabled={!user}>
+        <Button
+          type='submit'
+          variant='contained'
+          disabled={!user || !formState.isDirty}
+        >
           Update
         </Button>
       </form>

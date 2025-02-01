@@ -46,14 +46,17 @@ export const UserProvider: FC<PropsWithChildren> = ({ children }) => {
       const tx = db.transaction('users', 'readwrite');
       const store = tx.objectStore('users');
       console.log(store);
-      store.add(value);
+      store.put(value);
       const res = store.getAll('users');
       res.onsuccess = () => console.log('just after', res.result);
     };
     request.onerror = () => {
       console.error(request.error?.message);
     };
-    setUsers((prevState) => [...prevState, value]);
+    setUsers((prevState) => [
+      ...prevState.filter((data) => data.phoneNumber !== value.phoneNumber),
+      value,
+    ]);
   };
 
   useMount(() => {
