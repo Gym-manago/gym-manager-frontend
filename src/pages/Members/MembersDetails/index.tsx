@@ -5,10 +5,14 @@ import styles from './styles.module.scss';
 import {
   Button,
   Checkbox,
+  FormControl,
   FormControlLabel,
   FormLabel,
+  InputLabel,
+  MenuItem,
   Radio,
   RadioGroup,
+  Select,
   TextField,
   Typography,
 } from '@mui/material';
@@ -32,10 +36,15 @@ const MembersDetails = () => {
 
   const setUserData = useSetUser();
   const [age, setAge] = useState(user?.age ?? 0);
+  const [duration, setDuration] = useState({ gym: 0, pool: 0 });
 
   const onSubmit = (memberData: Member) => {
     setUserData({ ...memberData, age: age || memberData.age });
     navigate('/members');
+  };
+
+  const handleDuration = (duration: number, label: string) => {
+    setDuration((prev) => ({ ...prev, [label]: duration }));
   };
 
   function getAge(dateString: string) {
@@ -212,28 +221,76 @@ const MembersDetails = () => {
               render={({ field }) => (
                 <span className={styles.modal_form_group_horizontal}>
                   {['Gym', 'Swimming Pool'].map((label) => (
-                    <FormControlLabel
-                      control={
-                        <Checkbox
-                          value={label.toUpperCase()}
-                          checked={field.value.includes(
-                            label.toUpperCase() as (typeof field.value)[0]
-                          )}
+                    <span
+                      style={{
+                        display: 'flex',
+                        gap: '8px',
+                        width: '100%',
+                      }}
+                    >
+                      <FormControlLabel
+                        control={
+                          <Checkbox
+                            value={label.toUpperCase()}
+                            checked={field.value.includes(
+                              label.toUpperCase() as (typeof field.value)[0]
+                            )}
+                            onChange={(e) => {
+                              field.onChange(
+                                field.value.includes(
+                                  label.toUpperCase() as (typeof field.value)[0]
+                                )
+                                  ? field.value.filter(
+                                      (value) => value !== e.target.value
+                                    )
+                                  : [...field.value, e.target.value]
+                              );
+                            }}
+                          />
+                        }
+                        label={label}
+                        style={{ width: '100%' }}
+                      />
+                      <FormControl fullWidth>
+                        <InputLabel id='demo-simple-select-label'>
+                          Duration
+                        </InputLabel>
+                        <Select
+                          label='Duration'
+                          style={{ color: 'black' }}
+                          value={duration[label === 'Gym' ? 'gym' : 'pool']}
                           onChange={(e) => {
-                            field.onChange(
-                              field.value.includes(
-                                label.toUpperCase() as (typeof field.value)[0]
-                              )
-                                ? field.value.filter(
-                                    (value) => value !== e.target.value
-                                  )
-                                : [...field.value, e.target.value]
+                            handleDuration(
+                              parseInt(e.target.value as string) || 0,
+                              label === 'Gym' ? 'gym' : 'pool'
                             );
                           }}
-                        />
-                      }
-                      label={label}
-                    />
+                          disabled={
+                            !field.value.includes(
+                              label.toUpperCase() as (typeof field.value)[0]
+                            )
+                          }
+                        >
+                          <MenuItem value={0} disabled>
+                            Select duration
+                          </MenuItem>
+                          {(label === 'Gym'
+                            ? [
+                                [1, '1 month'],
+                                [3, '3 month'],
+                                [6, '6 month'],
+                                [12, '12 month'],
+                              ]
+                            : [
+                                [1, '15 days'],
+                                [2, '1 month'],
+                              ]
+                          ).map(([value, label]) => (
+                            <MenuItem value={value}>{label}</MenuItem>
+                          ))}
+                        </Select>
+                      </FormControl>
+                    </span>
                   ))}
                 </span>
               )}

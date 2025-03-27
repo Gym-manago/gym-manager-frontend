@@ -21,6 +21,7 @@
 
 .modal_form_group_horizontal {
   display: flex;
+  flex-direction: column;
   gap: spacing.$xs;
   width: 100%;
   div {

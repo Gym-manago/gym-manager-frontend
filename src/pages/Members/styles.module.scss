@@ -1,6 +1,6 @@
-@use "../../theme//spacing";
-@use "../../theme/borderRadius";
-@use "../../theme/palette";
+@use '../../theme//spacing';
+@use '../../theme/borderRadius';
+@use '../../theme/palette';
 
 .img {
   width: spacing.$l;
@@ -50,8 +50,8 @@
   flex-direction: column;
   gap: spacing.$xs;
   width: 100%;
-  input[type="number"]::-webkit-inner-spin-button,
-  input[type="number"]::-webkit-outer-spin-button {
+  input[type='number']::-webkit-inner-spin-button,
+  input[type='number']::-webkit-outer-spin-button {
     -webkit-appearance: none;
     margin: 0;
   }
@@ -59,7 +59,8 @@
 
 .modal_form_group_horizontal {
   display: flex;
-  gap: spacing.$xs;
+  flex-direction: column;
+  gap: spacing.$xxs;
   width: 100%;
   div {
     width: 100%;
