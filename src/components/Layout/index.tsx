@@ -30,17 +30,17 @@ export const Layout = ({
           {headerTitles
             .filter((t) => t !== undefined)
             .map((title) => (
-              <>
+              <div key={title}>
                 <span>
                   <ChevronRight />
                 </span>
                 <h1
                   style={{ cursor: 'pointer' }}
-                  onClick={() => navigate(`/${title}`)}
+                  onClick={() => navigate(`/app/${title}`)}
                 >
                   {title}
                 </h1>
-              </>
+              </div>
             ))}
         </div>
         {HeaderEndNode}

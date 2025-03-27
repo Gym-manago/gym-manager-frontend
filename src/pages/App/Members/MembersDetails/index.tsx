@@ -26,7 +26,7 @@ const MembersDetails = () => {
   const [user] = useUser(id);
   const navigate = useNavigate();
 
-  if (!user || !id) navigate('/members');
+  if (!user || !id) navigate('/app/members');
 
   const { control, handleSubmit, reset, setValue, formState } = useForm<Member>(
     {
@@ -40,7 +40,7 @@ const MembersDetails = () => {
 
   const onSubmit = (memberData: Member) => {
     setUserData({ ...memberData, age: age || memberData.age });
-    navigate('/members');
+    navigate('/app/members');
   };
 
   const handleDuration = (duration: number, label: string) => {
