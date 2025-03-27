@@ -8,7 +8,7 @@ import {
 } from '@mui/material';
 import { IconButton, InputAdornment, OutlinedInput } from '@mui/material';
 import styles from './styels.module.scss';
-import { useUser } from '../../../contexts/Users';
+import { useUser } from '../../../../contexts/Users';
 import { useEffect, useState } from 'react';
 import { SearchOutlined } from '@mui/icons-material';
 import { useNavigate } from 'react-router-dom';
@@ -73,7 +73,6 @@ const MembersList = () => {
 
   useEffect(() => {
     setRows(ROWS);
-    console.log('hit');
   }, [users]);
 
   return (

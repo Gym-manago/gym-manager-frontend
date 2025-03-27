@@ -17,7 +17,7 @@ import {
   Typography,
 } from '@mui/material';
 import { useState } from 'react';
-import { useSetUser } from '../../../contexts/Users';
+import { useSetUser } from '../../../../contexts/Users';
 
 interface Props {
   onClose: () => void;

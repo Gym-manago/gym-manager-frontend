@@ -5,7 +5,7 @@ import {
   useContext,
   useState,
 } from 'react';
-import { Member } from '../pages/Members/types';
+import { Member } from '../pages/App/Members/types';
 import { useMount } from 'react-use';
 
 const DATABASE_NAME = 'GymManagerDB';
@@ -22,7 +22,6 @@ const UserContext = createContext<UserContext>({
 
 export const useUser = (id?: string) => {
   const { users } = useContext(UserContext);
-  console.log(users, id);
 
   if (!users) {
     throw Error('Cannot access user outside!!');
@@ -45,7 +44,6 @@ export const UserProvider: FC<PropsWithChildren> = ({ children }) => {
       const db = request.result;
       const tx = db.transaction('users', 'readwrite');
       const store = tx.objectStore('users');
-      console.log(store);
       store.put(value);
       const res = store.getAll('users');
       res.onsuccess = () => console.log('just after', res.result);
