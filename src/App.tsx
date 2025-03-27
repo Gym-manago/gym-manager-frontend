@@ -5,21 +5,19 @@ import { Dashboard, Members, MembersDetails, MembersList } from './pages';
 import { useDispatch, useSelector } from 'react-redux';
 import { userSelector } from './store/selectors';
 import Login from './pages/Login';
-import { useMount } from 'react-use';
 import { login } from './store/slice/userSlice';
-// import dotenv from 'dotenv';
-// dotenv.config();
+import { useEffect } from 'react';
 
 function App() {
   const { token } = useSelector(userSelector);
   const dispatch = useDispatch();
   const navigate = useNavigate();
 
-  useMount(() => {
+  useEffect(() => {
     const userData = localStorage.getItem('user');
     if (!token && !userData) return navigate('/login');
     if (userData) dispatch(login(JSON.parse(userData)));
-  });
+  }, [token]);
 
   return (
     <Routes>

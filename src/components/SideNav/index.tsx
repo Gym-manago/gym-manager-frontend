@@ -1,4 +1,4 @@
-import { useLocation, useNavigate } from 'react-router-dom';
+import { useLocation } from 'react-router-dom';
 import NavItems from './components/NavItems';
 import styles from './styles.module.scss';
 import { People, Dashboard, LogoutRounded } from '@mui/icons-material';
@@ -15,7 +15,6 @@ export const SideNav = () => {
   const location = useLocation();
   const { email } = useSelector(userSelector);
   const dispatch = useDispatch();
-  const navigate = useNavigate();
 
   return (
     <div className={styles.main_container}>
@@ -43,7 +42,6 @@ export const SideNav = () => {
             onClick={() => {
               dispatch(logout());
               localStorage.removeItem('user');
-              navigate('/login');
             }}
           >
             <LogoutRounded />

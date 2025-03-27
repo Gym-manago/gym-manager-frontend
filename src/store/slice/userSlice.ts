@@ -14,7 +14,9 @@ const userSlice = createSlice({
       state.token = data.token;
     },
     logout: (state) => {
-      state = {};
+      state.email = undefined;
+      state.username = undefined;
+      state.token = undefined;
     },
   },
 });
