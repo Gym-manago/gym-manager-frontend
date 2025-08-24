@@ -23,7 +23,7 @@ const Login = () => {
     formData.append('username', values.username);
     formData.append('password', values.password);
 
-    fetch(`http://localhost:8000/auth/login`, {
+    fetch(`${import.meta.env.VITE_BASE_URL}auth/login`, {
       method: 'POSt',
       body: formData,
     })
