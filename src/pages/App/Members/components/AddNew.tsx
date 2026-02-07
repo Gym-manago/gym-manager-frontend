@@ -17,7 +17,9 @@ import {
   Typography,
 } from '@mui/material';
 import { useState } from 'react';
-import { useSetUser } from '../../../../contexts/Users';
+import getAge from '~/utils/getAge';
+import { useAsyncFn } from 'react-use';
+import { addNewMember } from '../api';
 
 interface Props {
   onClose: () => void;
@@ -26,29 +28,31 @@ interface Props {
 export const AddNew = ({ onClose }: Props) => {
   const { control, handleSubmit } = useForm<Member>({
     defaultValues: {
-      membershipType: [],
+      membershipType: undefined,
     },
   });
-  const setUserData = useSetUser();
   const [age, setAge] = useState(0);
   const [duration, setDuration] = useState({ gym: 0, pool: 0 });
+  const [_, addNewMemberAsync] = useAsyncFn(addNewMember);
 
   const onSubmit = (memberData: Member) => {
-    setUserData({ ...memberData, age });
+    console.log({ ...memberData, age });
+    const { address, ...member } = memberData;
+    const membershipStartDate = new Date();
+    const membershipEndDate = new Date();
+    membershipEndDate.setMonth(membershipStartDate.getMonth() + duration.gym);
+    const payload = {
+      member: {
+        ...member,
+        membershipStartDate: membershipStartDate.toLocaleDateString() as string,
+        membershipEndDate: membershipEndDate.toLocaleDateString() as string,
+      },
+      address,
+    };
+    console.log({ payload });
+    addNewMemberAsync(payload);
     onClose();
   };
-
-  function getAge(dateString: string) {
-    const today = new Date();
-    const birthDate = new Date(dateString);
-
-    let age = today.getFullYear() - birthDate.getFullYear();
-    const m = today.getMonth() - birthDate.getMonth();
-    if (m < 0 || (m === 0 && today.getDate() < birthDate.getDate())) {
-      age--;
-    }
-    return age;
-  }
 
   const handleDuration = (duration: number, label: string) => {
     setDuration((prev) => ({ ...prev, [label]: duration }));
@@ -81,11 +85,18 @@ export const AddNew = ({ onClose }: Props) => {
                   <TextField label='LastName' {...field} />
                 )}
               />
+              <Controller
+                control={control}
+                name='email'
+                render={({ field }) => (
+                  <TextField label='Email' {...field} required type='email' />
+                )}
+              />
             </span>
             <span className={styles.modal_form_group_horizontal}>
               <Controller
                 control={control}
-                name='dob'
+                name='dateOfBirth'
                 render={({ field }) => (
                   <TextField
                     type='date'
@@ -147,14 +158,14 @@ export const AddNew = ({ onClose }: Props) => {
             <span className={styles.modal_form_group_horizontal}>
               <Controller
                 control={control}
-                name='streetLine1'
+                name='address.streetLine1'
                 render={({ field }) => (
                   <TextField label='Street Line no. 1' {...field} required />
                 )}
               />
               <Controller
                 control={control}
-                name='streetLine2'
+                name='address.streetLine2'
                 render={({ field }) => (
                   <TextField label='Street Line no. 2' {...field} />
                 )}
@@ -163,14 +174,14 @@ export const AddNew = ({ onClose }: Props) => {
             <span className={styles.modal_form_group_horizontal}>
               <Controller
                 control={control}
-                name='city'
+                name='address.city'
                 render={({ field }) => (
                   <TextField label='City' {...field} required />
                 )}
               />
               <Controller
                 control={control}
-                name='state'
+                name='address.state'
                 render={({ field }) => (
                   <TextField label='State' {...field} required />
                 )}
@@ -179,14 +190,14 @@ export const AddNew = ({ onClose }: Props) => {
             <span className={styles.modal_form_group_horizontal}>
               <Controller
                 control={control}
-                name='pinCode'
+                name='address.pinCode'
                 render={({ field }) => (
                   <TextField label='Pin code' {...field} required />
                 )}
               />
               <Controller
                 control={control}
-                name='country'
+                name='address.country'
                 render={({ field }) => (
                   <TextField label='Country' {...field} required />
                 )}
@@ -226,19 +237,17 @@ export const AddNew = ({ onClose }: Props) => {
                           <FormControlLabel
                             control={
                               <Checkbox
-                                value={label.toUpperCase()}
-                                checked={field.value.includes(
-                                  label.toUpperCase() as (typeof field.value)[0]
-                                )}
+                                value={label}
+                                checked={
+                                  field.value ===
+                                  (label as (typeof field.value)[0])
+                                }
                                 onChange={(e) => {
                                   field.onChange(
-                                    field.value.includes(
-                                      label.toUpperCase() as (typeof field.value)[0]
-                                    )
-                                      ? field.value.filter(
-                                          (value) => value !== e.target.value
-                                        )
-                                      : [...field.value, e.target.value]
+                                    field.value ===
+                                      (label as (typeof field.value)[0])
+                                      ? undefined
+                                      : e.target.value
                                   );
                                 }}
                               />
@@ -261,9 +270,8 @@ export const AddNew = ({ onClose }: Props) => {
                                 );
                               }}
                               disabled={
-                                !field.value.includes(
-                                  label.toUpperCase() as (typeof field.value)[0]
-                                )
+                                field.value !==
+                                (label as (typeof field.value)[0])
                               }
                             >
                               <MenuItem value={0} disabled>

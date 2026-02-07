@@ -8,72 +8,86 @@ import {
 } from '@mui/material';
 import { IconButton, InputAdornment, OutlinedInput } from '@mui/material';
 import styles from './styels.module.scss';
-import { useUser } from '../../../../contexts/Users';
 import { useEffect, useState } from 'react';
 import { SearchOutlined } from '@mui/icons-material';
 import { useNavigate } from 'react-router-dom';
+import { getAllMembers } from '../api';
+import { useAsync } from 'react-use';
+import getAge from '~/utils/getAge';
 
 type Headers = {
-  id: 'name' | 'mobile_num' | 'gender' | 'age' | 'membership_type';
+  id: 'name' | 'phoneNumber' | 'gender' | 'age' | 'membershipType';
   label: string;
 }[];
 
 type Rows = {
+  id: string;
   name: string;
-  mobile_num: string;
+  phoneNumber: string;
   gender: 'Male' | 'Female' | 'Others';
-  age: string;
-  membership_type: string;
+  age: number;
+  membershipType: string;
 }[];
 
 const HEADERS_DATA: Headers = [
   { id: 'name', label: 'Name' },
-  { id: 'mobile_num', label: 'Mobile number' },
+  { id: 'phoneNumber', label: 'Mobile number' },
   { id: 'gender', label: 'Gender' },
   { id: 'age', label: 'Age' },
-  { id: 'membership_type', label: 'Membership Type' },
+  { id: 'membershipType', label: 'Membership Type' },
 ];
 
 const MembersList = () => {
-  const users = useUser();
-  const [searchValue, setSearchValue] = useState('');
-  const ROWS: Rows = users.map(
-    ({ firstName, lastName, phoneNumber, gender, age, membershipType }) => ({
-      name: firstName + ' ' + lastName,
-      mobile_num: phoneNumber,
+  const [searchValue, setSearchValue] = useState<string | undefined>(undefined);
+  const { value, error, loading } = useAsync(getAllMembers);
+
+  const ROWS: Rows | undefined = value?.map(
+    ({
+      id,
+      firstName,
+      lastName,
+      phoneNumber,
       gender,
-      age: age?.toString(),
-      membership_type: membershipType.join(' '),
+      dateOfBirth,
+      membershipType,
+    }) => ({
+      id,
+      name: firstName + ' ' + lastName,
+      phoneNumber,
+      gender,
+      age: getAge(dateOfBirth),
+      membershipType,
     })
   );
-  const [rows, setRows] = useState<Rows>(ROWS);
+  const [rows, setRows] = useState<Rows | undefined>(ROWS);
 
   const [timeCtx, setTimeCtx] = useState<NodeJS.Timeout | null>(null);
 
   const navigate = useNavigate();
 
   useEffect(() => {
-    if (searchValue) {
-      if (timeCtx) clearTimeout(timeCtx);
+    if (timeCtx) clearTimeout(timeCtx);
+    if (searchValue !== undefined)
       setTimeCtx(
         setTimeout(
           () =>
             setRows(
-              ROWS.filter((row) =>
-                row.name
-                  .toLowerCase()
-                  .includes(searchValue.trim().toLowerCase())
-              ) || []
+              !!searchValue
+                ? ROWS?.filter((row) =>
+                    row.name
+                      .toLowerCase()
+                      .includes(searchValue.trim().toLowerCase())
+                  ) || []
+                : ROWS
             ),
           500
         )
       );
-    }
   }, [searchValue]);
 
   useEffect(() => {
     setRows(ROWS);
-  }, [users]);
+  }, [value]);
 
   return (
     <div className={styles.members_content_container}>
@@ -100,12 +114,12 @@ const MembersList = () => {
             </TableRow>
           </TableHead>
           <TableBody>
-            {rows.map((row, index) => (
+            {rows?.map((row, index) => (
               <TableRow
                 style={{ cursor: 'pointer' }}
-                onClick={() => navigate(`${row.mobile_num}`)}
+                onClick={() => navigate(`${row.id}`)}
                 className={index % 2 ? styles.row_white : styles.row_dark}
-                key={row.mobile_num}
+                key={row.id}
               >
                 {HEADERS_DATA.map(({ id }) => (
                   <TableCell key={id}>{row[id]}</TableCell>

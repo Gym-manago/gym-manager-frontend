@@ -20,23 +20,31 @@ import { Controller, useForm } from 'react-hook-form';
 import { Member } from '../types';
 import { useEffect, useState } from 'react';
 import { HourglassBottom } from '@mui/icons-material';
+import { useAsync } from 'react-use';
+import { getMemberById } from '../api';
 
 const MembersDetails = () => {
   const { id } = useParams();
   const [user] = useUser(id);
   const navigate = useNavigate();
+  const { value, loading } = useAsync(
+    async () => (id ? await getMemberById(id) : undefined),
+    [id]
+  );
 
-  if (!user || !id) navigate('/app/members');
+  // if (!user || !id) navigate('/app/members');
 
   const { control, handleSubmit, reset, setValue, formState } = useForm<Member>(
     {
-      defaultValues: user || { membershipType: [] },
+      defaultValues: value
+        ? { ...value?.member, address: value?.address }
+        : { membershipType: '' },
     }
   );
 
   const setUserData = useSetUser();
   const [age, setAge] = useState(user?.age ?? 0);
-  const [duration, setDuration] = useState({ gym: 0, pool: 0 });
+  const [duration, setDuration] = useState({ Gym: 0, Pool: 0 });
 
   const onSubmit = (memberData: Member) => {
     setUserData({ ...memberData, age: age || memberData.age });
@@ -60,14 +68,25 @@ const MembersDetails = () => {
   }
 
   useEffect(() => {
-    if (user) {
-      reset(user);
-      setValue('gender', user.gender);
-      setAge(user.age);
+    console.log({ value });
+    if (value) {
+      const start = new Date(value.member.membershipStartDate);
+      const end = new Date(value.member.membershipEndDate);
+      const duration =
+        (end.getFullYear() - start.getFullYear()) * 12 +
+        (end.getMonth() - start.getMonth());
+      console.log(
+        { duration, start: start.getMonth(), end: end.getMonth() },
+        value.member.membershipType
+      );
+      reset({ ...value.member, address: value.address });
+      setValue('gender', value.member.gender);
+      setAge(getAge(value.member.dateOfBirth));
+      handleDuration(duration, value.member.membershipType);
     }
-  }, [user]);
+  }, [value]);
 
-  return !user ? (
+  return loading ? (
     <div className={styles.container}>
       <HourglassBottom />
     </div>
@@ -88,11 +107,18 @@ const MembersDetails = () => {
             name='lastName'
             render={({ field }) => <TextField label='LastName' {...field} />}
           />
+          <Controller
+            control={control}
+            name='email'
+            render={({ field }) => (
+              <TextField label='Email' {...field} required type='email' />
+            )}
+          />
         </span>
         <span className={styles.modal_form_group_horizontal}>
           <Controller
             control={control}
-            name='dob'
+            name='dateOfBirth'
             render={({ field }) => (
               <TextField
                 style={{ width: 'fit-content' }}
@@ -154,33 +180,34 @@ const MembersDetails = () => {
           />
         </span>
         <Typography variant='h6'>Address</Typography>
+        <br />
         <span className={styles.modal_form_group_horizontal}>
           <Controller
             control={control}
-            name='streetLine1'
+            name='address.streetLine1'
             render={({ field }) => (
               <TextField label='Street Line no. 1' {...field} required />
             )}
           />
           <Controller
             control={control}
-            name='streetLine2'
+            name='address.streetLine2'
             render={({ field }) => (
               <TextField label='Street Line no. 2' {...field} />
             )}
           />
-        </span>
+        </span>{' '}
         <span className={styles.modal_form_group_horizontal}>
           <Controller
             control={control}
-            name='city'
+            name='address.city'
             render={({ field }) => (
               <TextField label='City' {...field} required />
             )}
           />
           <Controller
             control={control}
-            name='state'
+            name='address.state'
             render={({ field }) => (
               <TextField label='State' {...field} required />
             )}
@@ -189,14 +216,14 @@ const MembersDetails = () => {
         <span className={styles.modal_form_group_horizontal}>
           <Controller
             control={control}
-            name='pinCode'
+            name='address.pinCode'
             render={({ field }) => (
               <TextField label='Pin code' {...field} required />
             )}
           />
           <Controller
             control={control}
-            name='country'
+            name='address.country'
             render={({ field }) => (
               <TextField label='Country' {...field} required />
             )}
@@ -231,19 +258,16 @@ const MembersDetails = () => {
                       <FormControlLabel
                         control={
                           <Checkbox
-                            value={label.toUpperCase()}
-                            checked={field.value.includes(
-                              label.toUpperCase() as (typeof field.value)[0]
-                            )}
+                            value={label}
+                            checked={
+                              field.value === (label as (typeof field.value)[0])
+                            }
                             onChange={(e) => {
                               field.onChange(
-                                field.value.includes(
-                                  label.toUpperCase() as (typeof field.value)[0]
-                                )
-                                  ? field.value.filter(
-                                      (value) => value !== e.target.value
-                                    )
-                                  : [...field.value, e.target.value]
+                                field.value ===
+                                  (label as (typeof field.value)[0])
+                                  ? undefined
+                                  : e.target.value
                               );
                             }}
                           />
@@ -258,17 +282,15 @@ const MembersDetails = () => {
                         <Select
                           label='Duration'
                           style={{ color: 'black' }}
-                          value={duration[label === 'Gym' ? 'gym' : 'pool']}
+                          value={duration[label === 'Gym' ? 'Gym' : 'Pool']}
                           onChange={(e) => {
                             handleDuration(
                               parseInt(e.target.value as string) || 0,
-                              label === 'Gym' ? 'gym' : 'pool'
+                              label === 'Gym' ? 'Gym' : 'Pool'
                             );
                           }}
                           disabled={
-                            !field.value.includes(
-                              label.toUpperCase() as (typeof field.value)[0]
-                            )
+                            field.value !== (label as (typeof field.value)[0])
                           }
                         >
                           <MenuItem value={0} disabled>
@@ -323,7 +345,7 @@ const MembersDetails = () => {
         <Button
           type='submit'
           variant='contained'
-          disabled={!user || !formState.isDirty}
+          disabled={!value || !formState.isDirty}
         >
           Update
         </Button>

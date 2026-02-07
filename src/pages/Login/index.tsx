@@ -24,7 +24,7 @@ const Login = () => {
     formData.append('password', values.password);
 
     fetch(`${import.meta.env.VITE_BASE_URL}auth/login`, {
-      method: 'POSt',
+      method: 'POST',
       body: formData,
     })
       .then(async (data) => {
